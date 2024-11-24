@@ -1,0 +1,5 @@
+webservers:
+  hosts:
+    debian12-mum.hinansho.de:
+      ansible_user: root
+      ansible_host: 10.0.0.49
