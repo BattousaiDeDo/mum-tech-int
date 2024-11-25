@@ -66,10 +66,15 @@
       login_user: root
       login_password: "{{ mysql_root_password }}"
   
+  - name: Make Testsite directory
+    ansible.builtin.file:
+      path: /var/www/testsite/
+      state: directory
+
   - name: Copy Error Page
     ansible.builtin.copy:
-      src: /opt/ansible/files/Error_404.html
-      dest: /var/www/testsite/Error_404.html
+      src: /opt/ansible/files/error_404.html
+      dest: /var/www/testsite/error_404.html
 
   - name: Copy IP script
     ansible.builtin.copy:
