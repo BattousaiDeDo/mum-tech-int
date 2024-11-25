@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COUNT=`grep "GET" /var/log/apache2/access.log | grep "200" | wc -l`
+COUNT=`grep "GET" /var/log/apache2/access.log | grep "200" | wc -l` #first chekc for all GETs, then for successful 200 and count the entries
 DIRECTORY=/var/www/testsite
 
 if [ ! -d "$DIRECTORY" ]; then
