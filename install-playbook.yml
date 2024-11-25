@@ -65,3 +65,29 @@
       state: present
       login_user: root
       login_password: "{{ mysql_root_password }}"
+  
+  - name: Copy Error Page
+    ansible.builtin.copy:
+      src: /opt/ansible/files/Error_404.html
+      dest: /var/www/testsite/Error_404.html
+
+  - name: Copy IP script
+    ansible.builtin.copy:
+      src: /opt/ansible/files/list_ips.sh
+      dest: /root/list_ips.sh
+
+  - name: Copy count script
+    ansible.builtin.copy:
+      src: /opt/ansible/files/count.sh
+      dest: /root/count.sh
+       
+  - name: Copy testsite
+    ansible.builtin.copy:
+      src: /opt/ansible/files/testsite.hinansho.de.conf
+      dest: /etc/apache2/sites-enabled/testsite.hinansho.de.conf
+  
+  - name: Start apache2
+    ansible.builtin.service:
+      name: apache2
+      state: restarted
+      enabled: true
