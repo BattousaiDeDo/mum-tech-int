@@ -1,7 +1,14 @@
 # mum-tech-int
-
 # Files for the Technical Interview
+## Preconditions \
+I used Debian 12 VM on host 10.0.0.50 \
+Installed following packages beforehand:
+ - python3
+ - ansible
+ - ssh-server
+ - vim
 
+How to run the playbook, run:
 ```
 ansible-playbook install-playbook.yml  
 ```
