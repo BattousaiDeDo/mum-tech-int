@@ -1,6 +1,6 @@
 # mum-tech-int
 # Files for the Technical Interview
-## Preconditions \
+## Preconditions 
 I used Debian 12 VM on host 10.0.0.50 \
 Installed following packages beforehand:
  - python3
