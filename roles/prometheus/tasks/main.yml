@@ -1,0 +1,14 @@
+---
+- name: Install latest version prometheus-node-exporter
+  ansible.builtin.package:
+    name: 
+      - prometheus-node-exporter
+      - prometheus-node-exporter-collectors
+    state: latest
+    update_cache: true
+
+- name: Start and enable Grafana
+  ansible.builtin.service:
+    name: prometheus-node-exporter
+    enabled: true
+    state: started

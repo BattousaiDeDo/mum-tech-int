@@ -1,125 +1,13 @@
-- name: Install webserver and DB
+---
+- name: Install Webserver, DB, Prom and Grafana
   hosts: all
   remote_user: root
   vars:
     mysql_root_password: "1234qwer"
     python_mysql: "{{ 'python3-mysqldb' if ansible_distribution|lower in ['debian', 'ubuntu'] else 'python3-PyMySQL' }}"
-
-  tasks:
-  - name: Set APT as package Manager
-    ansible.builtin.set_fact:
-      package_manager: 'apt'
-  
-  - name: Install latest apache
-    package:
-      name: apache2
-      state: latest
-  
-  - name: Install mariadb server and client
-    package:
-      name: mariadb-server
-      state: latest
-      update_cache: yes
-    loop:
-  
-  - name: Install python mysql
-    package:
-      name: "{{ python_mysql }}"
-      state: present
-      update_cache: yes
-
-  - name: Install dependecies for Grafana
-    package:
-      name:
-        - apt-transport-https
-        - software-properties-common
-        - wget
-      state: latest
-
-  - name: Add an apt key by id from a keyserver
-    ansible.builtin.apt_key:
-      url: https://apt.grafana.com/gpg.key
-      keyring: /etc/apt/keyrings/grafana.gpg
-      dest: /etc/apt/keyrings/grafana.gpg
-
-  - name: add grafana repo
-    ansible.builtin.apt_repository:
-      repo: [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main
-      state: present
-
-  - name: install grafana 
-    package:
-      name: grafana
-      state: latest
-      update_cache: yes
-
-  - name: start and enable mariadb server
-    service:
-      name: mariadb
-      enabled: true
-      state: started
-  
-  - name: update mysql root password for all root accounts  
-    mysql_user:  
-      name: root  
-      host: "{{ item }}"  
-      password: "{{ mysql_root_password }}"  
-      login_user: root  
-      login_password: "{{ mysql_root_password }}"  
-      check_implicit_admin: yes  
-      priv: "*.*:ALL,GRANT"  
-    with_items:  
-    - "{{ ansible_hostname }}"  
-    - 127.0.0.1  
-    - ::1  
-    - localhost
-  
-  - name: Create a new database with name 'testdb'
-    mysql_db:
-      name: testdb
-      state: present
-      login_user: root
-      login_password: "{{ mysql_root_password }}"
-  
-  - name: Create database user with password & all database privileges and 'WITH GRANT OPTION'
-    mysql_user:
-      name: testuser
-      password: ILikeTrains!
-      priv: 'testdb.*:ALL'
-      host: '%'
-      state: present
-      login_user: root
-      login_password: "{{ mysql_root_password }}"
-  
-  - name: Make Testsite directory
-    ansible.builtin.file:
-      path: /var/www/testsite/
-      state: directory
-
-  - name: Copy Error Page
-    ansible.builtin.copy:
-      src: /opt/ansible/files/error_404.html
-      dest: /var/www/testsite/error_404.html
-
-  - name: Copy IP script
-    ansible.builtin.copy:
-      src: /opt/ansible/files/list_ips.sh
-      dest: /root/list_ips.sh
-
-  - name: Copy count script
-    ansible.builtin.copy:
-      src: /opt/ansible/files/count.sh
-      dest: /root/count.sh
-       
-  - name: Copy testsite
-    ansible.builtin.copy:
-      src: /opt/ansible/files/testsite.hinansho.de.conf
-      dest: /etc/apache2/sites-enabled/testsite.hinansho.de.conf
-  
-  - name: Start apache2
-    ansible.builtin.service:
-      name: apache2
-      state: restarted
-      enabled: true
-
-##end
+  roles:
+    - apache
+    - mysql
+    - prometheus
+    - grafana
+# End

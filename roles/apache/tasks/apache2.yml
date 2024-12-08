@@ -1,0 +1,43 @@
+---
+- name: Install latest apache
+  ansible.builtin.package:
+    name: apache2
+    state: latest
+
+- name: Make Testsite directory
+  ansible.builtin.file:
+    path: /var/www/testsite/
+    state: directory
+    mode: '0755'
+
+- name: Copy Error Page
+  ansible.builtin.copy:
+    src: files/error_404.html
+    dest: /var/www/testsite/error_404.html
+    mode: '0755'
+
+- name: Copy IP script
+  ansible.builtin.copy:
+    src: files/list_ips.sh
+    dest: /root/list_ips.sh
+    mode: '0755'
+
+- name: Copy count script
+  ansible.builtin.copy:
+    src: files/count.sh
+    dest: /root/count.sh
+    mode: '0755'
+      
+- name: Copy testsite and enable it in Apache config
+  block:
+    - ansible.builtin.copy:
+        src: files/testsite.conf
+        dest: /etc/apache2/sites-available/testsite.conf
+        mode: '0755'
+    - ansible.builtin.command: '/usr/sbin/a2ensite testsite.conf'
+
+- name: Start Apache2
+  ansible.builtin.service:
+    name: apache2
+    state: restarted
+    enabled: true
