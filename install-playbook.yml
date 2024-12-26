@@ -27,7 +27,32 @@
       name: "{{ python_mysql }}"
       state: present
       update_cache: yes
-  
+
+  - name: Install dependecies for Grafana
+    package:
+      name:
+        - apt-transport-https
+        - software-properties-common
+        - wget
+      state: latest
+
+  - name: Add an apt key by id from a keyserver
+    ansible.builtin.apt_key:
+      url: https://apt.grafana.com/gpg.key
+      keyring: /etc/apt/keyrings/grafana.gpg
+      dest: /etc/apt/keyrings/grafana.gpg
+
+  - name: add grafana repo
+    ansible.builtin.apt_repository:
+      repo: [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main
+      state: present
+
+  - name: install grafana 
+    package:
+      name: grafana
+      state: latest
+      update_cache: yes
+
   - name: start and enable mariadb server
     service:
       name: mariadb
